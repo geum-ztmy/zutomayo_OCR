@@ -15,5 +15,5 @@
 
   
 # 参考:
-a. https://danglingfarpointer.hatenablog.com/entry/2015/01/28/215629
+a. https://danglingfarpointer.hatenablog.com/entry/2015/01/28/215629  
 b. https://www.tdi.co.jp/miso/tesseract-ocr
