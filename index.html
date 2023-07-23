@@ -34,7 +34,7 @@
   <div align="center">
     <img id="demoimg" src="./sample.png" />
     <!-- <div id="message">Recognizing...</div> -->
-    <div id="msg" align="center">準備中...</div>
+    <div id="msg">準備中...</div>
 
 
     <video id="player" controls autoplay playsinline></video>
@@ -48,14 +48,18 @@
     <input type="file" id="file-input">
     <br>
     <button class="button" id="ocr-button"> 認識！ </button>
+    <br>
 
 
 
     <div id="msg" align="center"></div>
-    <!-- <canvas id="snapshot" width="300" height="100"></canvas> -->
-
-
+    <canvas id="snapshot" width="300" height="100"></canvas>
+    <!-- <div id="res_tx"></div> -->
     <br>
+    <br>
+    <br>
+    <br>
+
 
 
     <script>
@@ -112,7 +116,7 @@
           await worker.initialize('ztmy');
           var result = await worker.recognize(url)
           console.log(result);
-          $("#msg").text("Progress Complete")
+          //$("#res_tx").text(result.data.text)
           var elem = document.createElement('div');
           elem.innerHTML = "<div id=" + num + " style='width:300px; background-color:#EEEEEE'><img src=" + url + " /></div><br>"
           var parent = document.getElementById("results");
@@ -177,7 +181,7 @@
         var result = await worker.recognize(fileInput.files[0])
 
         console.log(result);
-        $("#msg").text("Progress Complete")
+        //$("#res_tx").text(result.data.text)
         var elem = document.createElement('div');
 
         // Blob URLを作成する
