@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+  background: #FFF;
+}
+
+#demoimg{
+  width: 100%;
+}
+
+#player {
+  width: 0.1%;
+  height: 0%;
+}
+
+#capture, #ocr-button {
+  padding: 10px 30px;
+  font-weight: bold;
+  font-size: 1.4em;
+  background-color: #842;
+  color: #fff;
+  border-style: none;
+}
