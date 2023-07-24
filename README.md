@@ -18,7 +18,7 @@
 a. https://danglingfarpointer.hatenablog.com/entry/2015/01/28/215629  
 b. https://www.tdi.co.jp/miso/tesseract-ocr  
 
-サイトにするのに参考:
+サイトにするのに参考:  
   https://qiita.com/keito1024/items/dff19c95ca7c9b6c5d0c  
   https://qiita.com/quiye/items/2bb69e009bd12ea72f8c  
   https://github.com/jeromewu/tesseract.js-custom-traineddata  
