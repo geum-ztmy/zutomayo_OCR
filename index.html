@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <script src="https://unpkg.com/tesseract.js@2.0.0-beta.1/dist/tesseract.min.js"></script>
   <meta name="viewport"
-    content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no, minimal-ui">
+    content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="stylesheet" href="./index.css" />
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -15,46 +15,55 @@
     const worker = createWorker({
       langPath: './',
       gzip: false,
-      //logger: m => console.log(m)
     });
-
+    //最初に読み込むといいらしい?
     (async () => {
       await worker.load();
       await worker.loadLanguage('ztmy');
       await worker.initialize('ztmy');
       var result = await worker.recognize('./sample.png')
-      $("#msg").text('準備完了')
-      //document.getElementById('message').innerHTML = "認識完了: " + result.data.text;
+      $("#status").text('準備完了')
+      console.log(result.data.text);
       await worker.terminate();
     })();
   </script>
 </head>
 
+
+
 <body>
   <div align="center">
-    <img id="demoimg" src="./sample.png" />
-    <!-- <div id="message">Recognizing...</div> -->
-    <div id="msg">準備中...</div>
 
+    <!-- あたまのところ -->
+    <img id="demo_img" src="./sample.png" />
+    <br><br>
 
-    <video id="player" controls autoplay playsinline></video>
+    <!-- びでお(実はめっっちゃちっちゃいのが隠れてる) -->
+    <video id="player" muted autoplay playsinline></video>
     <canvas id="canvas" width="300" height="100"></canvas>
 
-    <div class="button">
-      <button id="capture"> 認識！ </button>
+    <div>
+      <button class="button" id="capture"> カメラ認識！ </button>
+    </div>
+    <br>
+    <div>
+      <input type="file" id="file-input">
+    </div>
+    <div>
+      <button class="button" id="ocr-button"> 画像認識！ </button>
+    </div>
+    <div>
+      <p>status:<span id="status">準備中</span></p>
     </div>
 
-    <br>
-    <input type="file" id="file-input">
-    <br>
-    <button class="button" id="ocr-button"> 認識！ </button>
-    <br>
 
 
 
-    <div id="msg" align="center"></div>
+    <br>
+    <!-- けっかのところ -->
+    <div id="results" align="center"></div>
     <canvas id="snapshot" width="300" height="100"></canvas>
-    <!-- <div id="res_tx"></div> -->
+    <br>
     <br>
     <br>
     <br>
@@ -67,11 +76,16 @@
       var video = document.getElementById("player"),
         canvas = document.getElementById("canvas"),
         ctx = canvas.getContext("2d");
+
+      video.autoplay = true;
+      video.muted = true;
+      video.playsInline = true;
+      canvas.width = 300;
+      canvas.height = 100;
+
       requestAnimationFrame(draw);
 
       function draw() {
-        canvas.width = 300;
-        canvas.height = 100;
         ctx.drawImage(video, 100, 300, 600, 200,
           0, 0, 300, 100);
         imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -87,17 +101,45 @@
         requestAnimationFrame(draw);
       }
 
-      var snapshotCanvas = document.getElementById('snapshot');
-      var captureButton = document.getElementById('capture');
-      var handleSuccess = function (stream) {
+
+
+      //ビデオとかの設定(俺もよくわからん)
+      const snapshotCanvas = document.getElementById('snapshot');
+      const captureButton = document.getElementById('capture');
+
+      const handleSuccess = function (stream) {
         video.srcObject = stream;
+        video.play();
       };
+
+      const handleError = function (error) {
+        console.error('navigator.getUserMedia error: ', error);
+      };
+
+      const constraints = {
+        audio: false,
+        video: {
+          width: 1920,
+          height: 1080,
+          facingMode: 'environment'
+        }
+      };
+
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then(handleSuccess)
+        .catch(handleError);
+
+
+
 
       var num = 1;
 
 
 
+
+      //認識！
       captureButton.addEventListener('click', async function () {
+        $("#status").text('認識中....')
         var context = snapshot.getContext('2d');
         context.drawImage(video, 100, 300, 600, 200, 0, 0, snapshotCanvas.width,
           snapshotCanvas.height);
@@ -107,7 +149,6 @@
         const worker = createWorker({
           langPath: './',
           gzip: false,
-          //logger: m => console.log(m)
         });
 
         (async () => {
@@ -116,9 +157,8 @@
           await worker.initialize('ztmy');
           var result = await worker.recognize(url)
           console.log(result);
-          //$("#res_tx").text(result.data.text)
           var elem = document.createElement('div');
-          elem.innerHTML = "<div id=" + num + " style='width:300px; background-color:#EEEEEE'><img src=" + url + " /></div><br>"
+          elem.innerHTML = "<div id=" + num + " style='width:300px; background-color:rgb(215,213,207)'><img src=" + url + " /></div><br>"
           var parent = document.getElementById("results");
           parent.insertBefore(elem, parent.firstChild);
           var numdiv = document.getElementById(num);
@@ -127,45 +167,38 @@
           numdiv.appendChild(msg);
           num += 1;
 
+          $("#status").text('処理完了');
+
           await worker.terminate();
         })();
       });
 
 
 
-
-
-
-      //var imageData;
-      //const reader = new FileReader();
-      //reader.onload = function (e) {
-      //  imageData = e.target.result; // 画像データを保存
-      //}
-      //reader.readAsDataURL(fileInput.files[0]);
-
+      //アップロード！
       const fileInput = document.getElementById('file-input');
       fileInput.type = 'file';
-
-      fileInput.addEventListener('change', function (event) {
-        console.log('up');
-        console.log(event.target.files[0]);
-        imagedata = event.target.files[0]
+      fileInput.addEventListener('change', function () {
+        const file = fileInput.files[0];
+        $("#status").text('アップロード完了');
       });
 
 
+      //画像認識！
       const ocrButton = document.getElementById('ocr-button');
-
       ocrButton.addEventListener('click', function () {
-        console.log('cl');
-        //if (!event.target.files[0]) return;
+        if (!fileInput.files[0]) {
+          $("#status").text('あっぷろーどしてね');
+          return;
+        }
         tryOcr().then(() => {
-          // OCRが完了した後に実行する処理を書く
+          // OCRが完了
+          $("#status").text('処理完了')
         });
       });
 
-
-
       const tryOcr = async () => {
+        $("#status").text('認識中......')
         const { createWorker } = Tesseract;
         const worker = createWorker({
           langPath: './',
@@ -173,8 +206,6 @@
           //logger: m => console.log(m)
         });
 
-
-        console.log("fn")
         await worker.load();
         await worker.loadLanguage('ztmy');
         await worker.initialize('ztmy');
@@ -187,7 +218,7 @@
         // Blob URLを作成する
         const imageUrl = URL.createObjectURL(fileInput.files[0]);
 
-        elem.innerHTML = "<div id=" + num + " style='width:300px; background-color:#EEEEEE'><img src=" + imageUrl + " width='300'; height='100'  /></div><br>"
+        elem.innerHTML = "<div id=" + num + " style='width:300px; background-color:rgb(215,213,207)'><img src=" + imageUrl + " width='300'; height='100'  /></div><br>"
 
         var parent = document.getElementById("results");
         parent.insertBefore(elem, parent.firstChild);
@@ -201,24 +232,10 @@
       }
 
 
-
-
-
-
-      var front = false;
-      var constraints = {
-        audio: false,
-        video: {
-          width: 1920,
-          height: 1080,
-          facingMode: (front ? "user" : "environment")
-        }
-      };
-      navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess);
-
     </script>
+
   </div>
-  <div id="results" align="center"></div>
+
 </body>
 
 </html>

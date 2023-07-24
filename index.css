@@ -1,9 +1,9 @@
 body {
   margin: 0;
-  background: #FFF;
+  background: rgb(214, 131, 207);
 }
 
-#demoimg{
+#demo_img {
   width: 100%;
 }
 
@@ -12,11 +12,27 @@ body {
   height: 0%;
 }
 
-#capture, #ocr-button {
+#capture,
+#ocr-button {
   padding: 10px 30px;
   font-weight: bold;
   font-size: 1.4em;
-  background-color: #842;
+  border-radius: 5px;
+  background-color: rgb(53, 182, 63);
   color: #fff;
   border-style: none;
+}
+
+#file-input {
+  width: 50%;
+  height: 40px;
+  background-color: #ccc;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+#snapshot {
+  opacity: 0;
 }
