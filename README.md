@@ -1,5 +1,7 @@
 # zutomayo_OCR
 ずとまよ文字を認識するやつ/ゴリゴリTesseract使ってる  
+サイト上で動きます↓  
+https://geum-ztmy.github.io/zutomayo_OCR/  
 
 # 備忘録
 1. https://github.com/nguyenq/jTessBoxEditor からjTessBoxEditorのzipをDL,解凍 -> cd jTessBoxEditor
