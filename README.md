@@ -3,6 +3,10 @@
 サイト上で動きます↓  
 https://geum-ztmy.github.io/zutomayo_OCR/  
 
+# 注意  
+  一部の機種はカメラ非対応かもです  
+  法に触れるようなことはしないでね/僕はなんも責任取らないよ
+
 # 備忘録
 1. https://github.com/nguyenq/jTessBoxEditor からjTessBoxEditorのzipをDL,解凍 -> cd jTessBoxEditor
 2. Tesseract/PyOCRを入れる
