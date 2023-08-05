@@ -38,9 +38,11 @@
     <img id="demo_img" src="./sample.png" />
     <br><br>
 
-    <!-- びでお(実はめっっちゃちっちゃいのが隠れてる) -->
-    <video id="player" muted autoplay playsinline></video>
-    <canvas id="canvas" width="300" height="100"></canvas>
+    <div id="video-container">
+      <!-- びでお(実はめっっちゃちっちゃいのが隠れてる) -->
+      <video id="player" muted autoplay playsinline></video>
+      <canvas id="canvas" width="300" height="100"></canvas>
+    </div>
 
     <div>
       <button class="button" id="capture"> カメラ認識！ </button>
@@ -113,6 +115,24 @@
       };
 
       const handleError = function (error) {
+        const captureButton = document.getElementById("capture");
+        captureButton.disabled = true;
+      
+        const videoContainer = document.getElementById("video-container");
+        const messages = ["カメラが使えないよ🥹"];
+        if (error.name === "NotAllowedError") {
+          messages.push("カメラのアクセスを許可してね");
+        }
+      
+        const errorMessage = `
+          <div class="error-message">
+            <p>
+              ${messages.join("<br />")}
+            </p>
+          </div>
+        `;
+        videoContainer.insertAdjacentHTML("beforeend", errorMessage);
+
         console.error('navigator.getUserMedia error: ', error);
       };
 
